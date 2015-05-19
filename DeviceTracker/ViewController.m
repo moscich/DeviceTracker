@@ -26,7 +26,8 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
   self.sessionManager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/atom+xml"];
   NSString *string = auth.accessToken;
   [self.sessionManager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", string] forHTTPHeaderField:@"Authorization"];
-  [self.sessionManager GET:@"https://spreadsheets.google.com/feeds/spreadsheets/private/full" parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+//  https://docs.google.com/a/miquido.com/spreadsheets/d/1apKnWvO_fXThWyv0at0KSLnQxz52l_HgoNRab1VYyOk/edit?usp=sharing
+  [self.sessionManager GET:@"https://spreadsheets.google.com/feeds/cells/1apKnWvO_fXThWyv0at0KSLnQxz52l_HgoNRab1VYyOk/od6/private/full?min-row=2&min-col=2&max-col=2" parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
       NSXMLParser *parser = responseObject;
       parser.delegate = self;
       [parser parse];
@@ -69,7 +70,10 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
-  NSLog(@"didStartElement --> %@", elementName);
+//  NSLog(@"attributeDict = %@", attributeDict);
+//  NSLog(@"qName = %@", qName);
+//  NSLog(@"namespaceURI = %@", namespaceURI);
+//  NSLog(@"didStartElement --> %@", elementName);
 }
 
 -(void) parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
