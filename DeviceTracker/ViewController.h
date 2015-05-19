@@ -7,9 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GooglePlus/GooglePlus.h>
 
-@interface ViewController : UIViewController
+@class GPPSignIn;
+@class AFHTTPSessionManager;
+
+@interface ViewController : UIViewController <GPPSignInDelegate, NSXMLParserDelegate>
 
 
+@property(nonatomic, strong) GPPSignIn *googleSignIn;
+
+@property(nonatomic, strong) NSXMLParser *parser;
+
+@property(nonatomic, strong) AFHTTPSessionManager *sessionManager;
+
+- (IBAction)signIn;
 @end
 
