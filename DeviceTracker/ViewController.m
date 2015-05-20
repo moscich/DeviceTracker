@@ -24,9 +24,6 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
 - (void)finishedWithAuth:(GTMOAuth2Authentication *)auth error:(NSError *)error {
   NSLog(@"auth = %@", auth);
 
-  dispatch_group_t group = dispatch_group_create();
-
-//  dispatch_group_enter(group);
   self.sessionManager = [AFHTTPSessionManager new];
   self.sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
   self.sessionManager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/atom+xml"];
@@ -60,11 +57,24 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
                 }
               }
 
+
           }
                    failure:
                            ^(NSURLSessionDataTask *task, NSError *error2) {
                                NSLog(@"task = %@", error2);
                            }];
+
+  AFHTTPSessionManager *manager = [AFHTTPSessionManager new];
+  manager.responseSerializer = [AFJSONResponseSerializer serializer];
+  [manager.requestSerializer setValue:self.value forHTTPHeaderField:@"Authorization"];
+
+  [manager GET:@"https://www.googleapis.com/oauth2/v1/userinfo" parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+      NSLog(@"responseObject = %@", responseObject);
+      self.name = responseObject[@"name"];
+  } failure:^(NSURLSessionDataTask *task, NSError *erro1r) {
+      NSLog(@"erro1r = %@", erro1r);
+  }];
+
 
 //  dispatch_group_enter(group);
 //
@@ -143,12 +153,12 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
   DeviceDTO *device = [self deviceForNumber:number];
 
   NSString *entry = [NSString stringWithFormat:@"<entry xmlns=\"http://www.w3.org/2005/Atom\"\n"
-          "    xmlns:gs=\"http://schemas.google.com/spreadsheets/2006\">\n"
-          "  <id>%@</id>\n"
-          "  <link rel=\"edit\" type=\"application/atom+xml\"\n"
-          "    href=\"%@\"/>\n"
-          "  <gs:cell row=\"%d\" col=\"%d\" inputValue=\"TEST IOS\"/>\n"
-          "</entry>",device.editURLString,device.editURLString,device.row,device.editColumn];
+                                                       "    xmlns:gs=\"http://schemas.google.com/spreadsheets/2006\">\n"
+                                                       "  <id>%@</id>\n"
+                                                       "  <link rel=\"edit\" type=\"application/atom+xml\"\n"
+                                                       "    href=\"%@\"/>\n"
+                                                       "  <gs:cell row=\"%d\" col=\"%d\" inputValue=\"%@\"/>\n"
+                                                       "</entry>", device.editURLString, device.editURLString, device.row, device.editColumn, self.name];
 
 
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:device.editURLString]

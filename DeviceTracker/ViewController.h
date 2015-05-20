@@ -29,6 +29,8 @@
 
 @property(nonatomic, copy) NSString *value;
 
+@property(nonatomic, strong) id name;
+
 - (IBAction)signIn;
 - (IBAction)super;
 
