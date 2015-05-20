@@ -71,7 +71,7 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
   [manager GET:@"https://www.googleapis.com/oauth2/v1/userinfo" parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
       NSLog(@"responseObject = %@", responseObject);
       self.name = responseObject[@"name"];
-  } failure:^(NSURLSessionDataTask *task, NSError *erro1r) {
+  }    failure:^(NSURLSessionDataTask *task, NSError *erro1r) {
       NSLog(@"erro1r = %@", erro1r);
   }];
 
@@ -147,9 +147,8 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
   [[GPPSignIn sharedInstance] authenticate];
 }
 
-- (void)super {
+- (void)super:(int)number {
 
-  int number = [self.textField.text intValue];
   DeviceDTO *device = [self deviceForNumber:number];
 
   NSString *entry = [NSString stringWithFormat:@"<entry xmlns=\"http://www.w3.org/2005/Atom\"\n"
@@ -183,6 +182,31 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
 
 }
 
+- (void)qr {
+
+  NSError *error;
+  AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+  AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:&error];
+  self.captureSession = [[AVCaptureSession alloc] init];
+  [self.captureSession addInput:input];
+
+  AVCaptureMetadataOutput *captureMetadataOutput = [[AVCaptureMetadataOutput alloc] init];
+  [_captureSession addOutput:captureMetadataOutput];
+
+  dispatch_queue_t dispatchQueue;
+  dispatchQueue = dispatch_queue_create("myQueue", NULL);
+  [captureMetadataOutput setMetadataObjectsDelegate:self queue:dispatchQueue];
+  [captureMetadataOutput setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
+
+  self.videoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_captureSession];
+  [self.videoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+  [self.videoPreviewLayer setFrame:_viewPreview.layer.bounds];
+  [_viewPreview.layer addSublayer:self.videoPreviewLayer];
+
+  [_captureSession startRunning];
+}
+
+
 - (void)logout {
   [self.googleSignIn disconnect];
 }
@@ -194,6 +218,12 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
     }
   }
   return nil;
+}
+
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
+  AVMetadataMachineReadableCodeObject *object = metadataObjects.lastObject;
+  [self.captureSession stopRunning];
+  [self super:[object.stringValue intValue]];
 }
 
 @end

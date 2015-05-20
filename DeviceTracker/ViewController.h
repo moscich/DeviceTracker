@@ -8,11 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <GooglePlus/GooglePlus.h>
+#import <AVFoundation/AVFoundation.h>
 
 @class GPPSignIn;
 @class AFHTTPSessionManager;
 
-@interface ViewController : UIViewController <GPPSignInDelegate, NSXMLParserDelegate>
+@interface ViewController : UIViewController <GPPSignInDelegate, NSXMLParserDelegate, AVCaptureMetadataOutputObjectsDelegate>
 
 
 @property(nonatomic, strong) GPPSignIn *googleSignIn;
@@ -31,8 +32,15 @@
 
 @property(nonatomic, strong) id name;
 
-- (IBAction)signIn;
-- (IBAction)super;
+@property(nonatomic, strong) AVCaptureSession *captureSession;
 
+@property(nonatomic, strong) AVCaptureVideoPreviewLayer *videoPreviewLayer;
+@property (weak, nonatomic) IBOutlet UIView *viewPreview;
+
+- (IBAction)signIn;
+
+- (void)super:(int)number;
+
+- (IBAction)qr;
 @end
 
