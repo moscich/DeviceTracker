@@ -21,6 +21,15 @@
 
 @property(nonatomic, strong) AFHTTPSessionManager *sessionManager;
 
+@property(nonatomic, strong) NSMutableDictionary *deviceNumbers;
+@property(nonatomic, strong) NSMutableDictionary *deviceNames;
+
+@property(nonatomic, strong) NSMutableArray *devices;
+
+@property(nonatomic, copy) NSString *value;
+
 - (IBAction)signIn;
+- (IBAction)super;
+
 @end
 

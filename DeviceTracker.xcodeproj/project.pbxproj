@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		530420EB099AFCC145FFDF55 /* GooglePlus in Resources */ = {isa = PBXBuildFile; fileRef = 53042B980B2C8170DC5D91AE /* GooglePlus */; };
 		530421775A902B3A322CD2D4 /* GoogleOpenSource in Resources */ = {isa = PBXBuildFile; fileRef = 530427566018A4F300059FF5 /* GoogleOpenSource */; };
+		530422DA35D9B42BBC60A84C /* DeviceDTO.m in Sources */ = {isa = PBXBuildFile; fileRef = 530428EB0ADB670C215F5D34 /* DeviceDTO.m */; };
 		79F07B641B0BA3FB000156B0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F07B631B0BA3FB000156B0 /* main.m */; };
 		79F07B671B0BA3FB000156B0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F07B661B0BA3FB000156B0 /* AppDelegate.m */; };
 		79F07B6A1B0BA3FB000156B0 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F07B691B0BA3FB000156B0 /* ViewController.m */; };
@@ -81,6 +82,7 @@
 		530427D0355F0126C57CCCE5 /* GTLPlusPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLPlusPlace.h; sourceTree = "<group>"; };
 		53042801DB2AF8016525FA30 /* GTLDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLDefines.h; sourceTree = "<group>"; };
 		5304286D99752D8E73C2559B /* OpenInChromeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenInChromeController.h; sourceTree = "<group>"; };
+		530428EB0ADB670C215F5D34 /* DeviceDTO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceDTO.m; sourceTree = "<group>"; };
 		530429184A464E4210586417 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		5304291FF50E4A451B6EC743 /* GTLPlusPeopleFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLPlusPeopleFeed.h; sourceTree = "<group>"; };
 		530429390E9D3220629B062E /* GTMMethodCheck.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMMethodCheck.h; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 		53042CD794FDC209672FDF5B /* GTLPlusItemScope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLPlusItemScope.h; sourceTree = "<group>"; };
 		53042CF94478A0B2BA9E119F /* GTLUploadParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLUploadParameters.h; sourceTree = "<group>"; };
 		53042D952E1A34E266DD7CC3 /* GTLPlusMomentsFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLPlusMomentsFeed.h; sourceTree = "<group>"; };
+		53042F1AFCC86C309A36C233 /* DeviceDTO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceDTO.h; sourceTree = "<group>"; };
 		53042F57C613A52E1F1BFF0F /* GTLErrorObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLErrorObject.h; sourceTree = "<group>"; };
 		53042FDA04FFB4DA733FAEE4 /* GPPSignInButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPPSignInButton.h; sourceTree = "<group>"; };
 		53042FFDEAA015D2037DA759 /* GTMNSDictionary+URLArguments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSDictionary+URLArguments.h"; sourceTree = "<group>"; };
@@ -343,6 +346,8 @@
 				79F07B701B0BA3FB000156B0 /* LaunchScreen.xib */,
 				79F07B611B0BA3FB000156B0 /* Supporting Files */,
 				53042A4B09BE2F23866DCA3C /* Frameworks */,
+				530428EB0ADB670C215F5D34 /* DeviceDTO.m */,
+				53042F1AFCC86C309A36C233 /* DeviceDTO.h */,
 			);
 			path = DeviceTracker;
 			sourceTree = "<group>";
@@ -521,6 +526,7 @@
 				79F07B6A1B0BA3FB000156B0 /* ViewController.m in Sources */,
 				79F07B671B0BA3FB000156B0 /* AppDelegate.m in Sources */,
 				79F07B641B0BA3FB000156B0 /* main.m in Sources */,
+				530422DA35D9B42BBC60A84C /* DeviceDTO.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
