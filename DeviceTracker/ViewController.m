@@ -32,7 +32,7 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
   self.sessionManager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/atom+xml"];
   self.value = [NSString stringWithFormat:@"Bearer %@", auth.accessToken];
   [self.sessionManager.requestSerializer setValue:self.value forHTTPHeaderField:@"Authorization"];
-  [self.sessionManager GET:@"https://spreadsheets.google.com/feeds/cells/1Y19H0qUeI1FEetqL6165LHVn9qzxIz6oMjw4X_heXO8/od6/private/full?min-row=2&min-col=1&max-col=2" parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+  [self.sessionManager GET:@"https://spreadsheets.google.com/feeds/cells/1Y19H0qUeI1FEetqL6165LHVn9qzxIz6oMjw4X_heXO8/od6/private/full?min-row=2&min-col=1&max-col=3&return-empty=true" parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
               XMLDictionaryParser *parser1 = [XMLDictionaryParser new];
               NSDictionary *dictionary = [parser1 dictionaryWithData:responseObject];
               NSArray *entries = dictionary[@"entry"];
@@ -51,11 +51,13 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
               }
               for (int i = 0; i < entries.count; i++) {
                 NSDictionary *entry = entries[(NSUInteger) i];
+                DeviceDTO *device = [self deviceForRow:[entry[@"gs:cell"][@"_row"] intValue]];
                 if ([entry[@"gs:cell"][@"_col"] intValue] == 2) {
-                  DeviceDTO *device = [self deviceForRow:[entry[@"gs:cell"][@"_row"] intValue]];
                   device.name = entry[@"gs:cell"][@"_inputValue"];
+                } else if ([entry[@"gs:cell"][@"_col"] intValue] == 3) {
+                  device.editURLString = [self getEditLinkDictionary:entry[@"link"]][@"_href"];
+                  device.editColumn = 3;
                 }
-
               }
 
           }
@@ -108,6 +110,14 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
   return nil;
 }
 
+- (DeviceDTO *)deviceForNumber:(int)number {
+  for (DeviceDTO *device in self.devices) {
+    if (device.number == number)
+      return device;
+  }
+  return nil;
+}
+
 - (void)signIn {
   self.googleSignIn = [GPPSignIn sharedInstance];
   self.googleSignIn.shouldFetchGooglePlusUser = YES;
@@ -129,33 +139,33 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
 
 - (void)super {
 
+  int number = [self.textField.text intValue];
+  DeviceDTO *device = [self deviceForNumber:number];
 
-
-  NSString *entry = @"<entry xmlns=\"http://www.w3.org/2005/Atom\"\n"
+  NSString *entry = [NSString stringWithFormat:@"<entry xmlns=\"http://www.w3.org/2005/Atom\"\n"
           "    xmlns:gs=\"http://schemas.google.com/spreadsheets/2006\">\n"
-          "  <id>https://spreadsheets.google.com/feeds/cells/1Y19H0qUeI1FEetqL6165LHVn9qzxIz6oMjw4X_heXO8/od6/private/full/R3C2/5roepi</id>\n"
+          "  <id>%@</id>\n"
           "  <link rel=\"edit\" type=\"application/atom+xml\"\n"
-          "    href=\"https://spreadsheets.google.com/feeds/cells/1Y19H0qUeI1FEetqL6165LHVn9qzxIz6oMjw4X_heXO8/od6/private/full/R3C2/5roepi\"/>\n"
-          "  <gs:cell row=\"3\" col=\"2\" inputValue=\"TEST IOS\"/>\n"
-          "</entry>";
+          "    href=\"%@\"/>\n"
+          "  <gs:cell row=\"%d\" col=\"%d\" inputValue=\"TEST IOS\"/>\n"
+          "</entry>",device.editURLString,device.editURLString,device.row,device.editColumn];
 
 
-
-  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://spreadsheets.google.com/feeds/cells/1Y19H0qUeI1FEetqL6165LHVn9qzxIz6oMjw4X_heXO8/od6/private/full/R3C2/5roepi"]
-                                                         cachePolicy:NSURLRequestReloadIgnoringCacheData  timeoutInterval:10];
+  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:device.editURLString]
+                                                         cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:10];
 
   [request setHTTPMethod:@"PUT"];
   [request setValue:self.value forHTTPHeaderField:@"Authorization"];
-  [request setValue: @"application/atom+xml" forHTTPHeaderField:@"Content-Type"];
-  [request setHTTPBody: [entry dataUsingEncoding:NSUTF8StringEncoding]];
+  [request setValue:@"application/atom+xml" forHTTPHeaderField:@"Content-Type"];
+  [request setHTTPBody:[entry dataUsingEncoding:NSUTF8StringEncoding]];
 
   AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
   op.responseSerializer = [AFHTTPResponseSerializer serializer];
   [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
       NSString *string = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-      NSLog(@"JSON responseObject: %@ ",string);
+      NSLog(@"JSON responseObject: %@ ", string);
 
-  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+  }                         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
       NSLog(@"Error: %@", [error localizedDescription]);
 
   }];
@@ -167,43 +177,13 @@ static NSString *const kClientId = @"302427111235-5npfcs0jqaik1l1k9tl9kh6o0rghvg
   [self.googleSignIn disconnect];
 }
 
-- (void)parserDidEndDocument:(NSXMLParser *)parser {
-  NSLog(@"parser  TEST = %@", parser);
-}
-
-- (void)parserDidStartDocument:(NSXMLParser *)parser {
-  NSLog(@"parserDidStartDocument");
-}
-
-- (void) parser:(NSXMLParser *)parser
-didStartElement:
-        (NSString *)elementName
-   namespaceURI:
-           (NSString *)namespaceURI
-  qualifiedName:
-          (NSString *)qName
-     attributes:
-             (NSDictionary *)attributeDict {
-//  NSLog(@"attributeDict = %@", attributeDict);
-//  NSLog(@"qName = %@", qName);
-//  NSLog(@"namespaceURI = %@", namespaceURI);
-//  NSLog(@"didStartElement --> %@", elementName);
-}
-
-- (void) parser:(NSXMLParser *)parser
-foundCharacters:
-        (NSString *)string {
-  NSLog(@"foundCharacters --> %@", string);
-}
-
-- (void)parser:(NSXMLParser *)parser
- didEndElement:
-         (NSString *)elementName
-  namespaceURI:
-          (NSString *)namespaceURI
- qualifiedName:
-         (NSString *)qName {
-  NSLog(@"didEndElement   --> %@", elementName);
+- (NSDictionary *)getEditLinkDictionary:(NSArray *)array {
+  for (NSDictionary *dict in array) {
+    if ([dict[@"_rel"] isEqualToString:@"edit"]) {
+      return dict;
+    }
+  }
+  return nil;
 }
 
 @end

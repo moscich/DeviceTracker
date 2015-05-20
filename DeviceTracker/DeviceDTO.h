@@ -11,6 +11,8 @@
 
 @property(nonatomic, assign) int number;
 @property(nonatomic, copy) NSString *name;
+@property(nonatomic, copy) NSString *editURLString;
 @property(nonatomic, assign) int row;
+@property(nonatomic, assign) int editColumn;
 
 @end

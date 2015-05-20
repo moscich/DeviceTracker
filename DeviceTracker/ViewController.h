@@ -16,6 +16,7 @@
 
 
 @property(nonatomic, strong) GPPSignIn *googleSignIn;
+@property(nonatomic, strong) IBOutlet UITextField *textField;
 
 @property(nonatomic, strong) NSXMLParser *parser;
 
